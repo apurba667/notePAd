@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-List<String> datas = [
-  """
-  Multi String writing 
-  """
-      """
-  Another MultiString example
-  """
-];
+List<String> datas = [];
 
-readData() {}
-addData() {
+Future readData() async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  datas = pref.getStringList("key") ?? [];
+}
+
+addData() async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
   datas.add("""Wriete Here""");
+  await pref.setStringList("key", datas);
+  readData();
 }
 
-removeData(String mLine) {
+removeData(String mLine) async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
   datas.remove(mLine);
+  await pref.setStringList("key", datas);
+  readData();
 }
 
-saveData() {}
+saveData(int index, String newMLine) async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  datas[index] = newMLine;
+  await pref.setStringList("key", datas);
+  readData();
+}
